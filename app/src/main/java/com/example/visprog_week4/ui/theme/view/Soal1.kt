@@ -78,7 +78,6 @@ fun Soal1View() {
                 Text(
                     "Boogle Play",
                     color = Color.Gray
-//                        FontWeight = FontWeight.Bold
                 )
             },
             leadingIcon = {
@@ -104,40 +103,57 @@ fun Soal1View() {
             shape = RoundedCornerShape(8.dp),
             singleLine = true
         )
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF00897B)),
-//                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+                .background(Color(0xFF00897B))
         ) {
-            mainTab.forEachIndexed { index, text ->
-                MainTab(
-                    text = text,
-                    selected = selectedMainTab == index,
-                    onClick = { selectedMainTab = index }
-//                    Modifier.weight(1f)
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                mainTab.forEachIndexed { index, text ->
+                    MainTab(
+                        text = text,
+                        selected = selectedMainTab == index,
+                        onClick = { selectedMainTab = index }
+                    )
+                }
             }
         }
 
-        LazyRow(
+        // Category tabs with white background and indicator
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background((Color.White))
-                .horizontalScroll(rememberScrollState()),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(24.dp)
+                .background(Color.White)
         ) {
-            items(category.size) { index ->
-                CategoryTab(
-                    text = category[index],
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index }
-                )
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                items(category.size) { index ->
+                    CategoryTab(
+                        text = category[index],
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index }
+                    )
+                }
             }
+
+            // White indicator bar positioned at bottom
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(Color.White)
+            )
         }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -150,11 +166,11 @@ fun Soal1View() {
                 games = gameDataSource.loadRecommendedGames()
             )
             GameCardView(
-                title = "Recommended For You",
+                title = "New & Updated Games",
                 games = gameDataSource.loadNewGames()
             )
             GameCardView(
-                title = "Recommended For You",
+                title = "Popular Games",
                 games = gameDataSource.loadPopularGames()
             )
         }
@@ -167,33 +183,27 @@ fun RowScope.MainTab(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    Box(
+    Column(
         modifier = Modifier
-            .weight(1f) // each tab takes equal width
-            .clickable { onClick() }
-            .padding(vertical = 8.dp),
-        contentAlignment = Alignment.Center
+            .weight(1f)
+            .clickable { onClick() },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = text.uppercase(),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp)
-                    .background(
-                        if (selected) Color.White else Color.Transparent
-                    )
-            )
-        }
+        Text(
+            text = text.uppercase(),
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(
+                    if (selected) Color.White else Color.Transparent
+                )
+        )
     }
 }
 
@@ -203,20 +213,36 @@ fun CategoryTab(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .background(
-                color = Color(0xFF00897B),
-                shape = RoundedCornerShape(20.dp)
-            )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = text.uppercase(),
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
+        Box(
+            modifier = Modifier
+                .background(
+                    color = Color(0xFF00897B),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable { onClick() }
+        ) {
+            Text(
+                text = text.uppercase(),
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // White indicator below selected category
+        Box(
+            modifier = Modifier
+                .width(60.dp)
+                .height(3.dp)
+                .background(
+                    if (selected) Color.White else Color.Transparent
+                )
         )
     }
 }
